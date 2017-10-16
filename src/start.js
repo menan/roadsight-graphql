@@ -9,7 +9,7 @@ import {
 } from 'graphql';
 
 const URL = 'http://localhost'
-const PORT = 3001
+const PORT = process.env.PORT || 3001;
 const MONGO_URL = `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_URL}:${process.env.DB_PORT}/${process.env.DB_NAME}`
 
 const prepare = (o) => {
