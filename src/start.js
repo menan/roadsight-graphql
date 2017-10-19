@@ -31,6 +31,7 @@ export const start = async () => {
       type Query {
         report(_id: String): Report
         reports: [Report]
+        reportsCloseBy(lat: Float, lng: Float, max: Int, min: Int): [Report]
       }
 
       type Report {
@@ -84,6 +85,18 @@ export const start = async () => {
         reports: async () => {
           return (await Reports.find({}).toArray()).map(prepare)
         },
+        reportsCloseBy: async (root, {lat, lng, max, min}) => {
+          return (await Reports.find({
+            location:
+            { $near:
+                {
+                  $geometry: { type: "Point",  coordinates: [ lat, lng ] },
+                  $minDistance: min,
+                  $maxDistance: max
+                }
+            }
+          }).toArray()).map(prepare)
+        }
       },
       Mutation: {
         createReport: async (root, args, context, info) => {
