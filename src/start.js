@@ -21,6 +21,8 @@ export const start = async () => {
   try {
     const db = await MongoClient.connect(MONGO_URL)
 
+    const logger = { log: (e) => console.log(e) }
+
     const Reports = db.collection('reports')
 
     const typeDefs = [`
@@ -38,12 +40,12 @@ export const start = async () => {
         source: String
         votes: Int
         location: Location
+        placeName: String
       }
 
       type Location {
-        lat: Float
-        lng: Float
-        placeName: String
+        type: String
+        coordinates: [Float]
       }
 
       type Mutation {
@@ -80,7 +82,7 @@ export const start = async () => {
           return prepare(await Reports.findOne(ObjectId(_id)))
         },
         reports: async () => {
-          return (await Reports.find({}).toArray()).map(prepare)
+          return (await Reports.find({}).toArray().sort({_id: -1})).map(prepare)
         },
       },
       Mutation: {
@@ -90,10 +92,10 @@ export const start = async () => {
             date: new Date(),
             source: args.source,
             votes: 0,
+            placeName: args.placeName,
             location: {
-              lat: args.lat,
-              lng: args.lng,
-              placeName: args.placeName,
+              type: "Point",
+              coordinates: [args.lat, args.lng]
             }
           }
 
@@ -113,7 +115,8 @@ export const start = async () => {
 
     const schema = makeExecutableSchema({
       typeDefs,
-      resolvers
+      resolvers,
+      logger
     })
 
     const app = express()
