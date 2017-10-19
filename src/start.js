@@ -82,7 +82,7 @@ export const start = async () => {
           return prepare(await Reports.findOne(ObjectId(_id)))
         },
         reports: async () => {
-          return (await Reports.find({}).sort({_id: -1})).toArray().map(prepare)
+          return (await Reports.find({$query:{}, $orderBy: {_id: -1}}).toArray().map(prepare)
         },
       },
       Mutation: {
