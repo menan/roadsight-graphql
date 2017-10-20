@@ -11,8 +11,7 @@
   },
   "author": "Menan Vadivel <menan.vadivel@gmail.com>",
   "license": "ISC",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "babel-cli": "^6.26.0",
     "body-parser": "^1.15.2",
